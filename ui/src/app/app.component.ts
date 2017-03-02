@@ -1,14 +1,13 @@
 import { Component } from '@angular/core';
 
-export class Pokemon {
-  name: String;
-}
+import {PokemonService} from './pokemon.service';
 
 @Component({
   selector: 'my-app',
   template: `
-  <input [(ngModel)]="search">
-  Search: {{search}}
-  <h1>Hello {{pokemon.name}}</h1>`,
+  <h1>Pokedex</h1>
+  <router-outlet></router-outlet>
+  `,
+  providers: [PokemonService],
 })
-export class AppComponent  { search: ''; pokemon: Pokemon = {name: 'pikachu'}; }
+export class AppComponent{};
