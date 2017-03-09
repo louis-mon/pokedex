@@ -5,16 +5,19 @@ import {Pokemon} from './pokemon';
 
 import 'rxjs/add/operator/toPromise';
 
+const baseUrl = 'http://localhost:9000/';
+
 @Injectable()
 export class PokemonService {
   constructor(private http: Http) {}
-  getPokemons(): Promise<Pokemon[]> {
-    return this.http.get('http://localhost:9000/list/0/10/a')
+  getPokemons(name: string): Promise<Pokemon[]> {
+    return this.http.get(`${baseUrl}list?name=${name}`)
     .toPromise()
     .then(response => response.json() as Pokemon[])
   }
-  getPokemon(id: number) : Promise<Pokemon> {
-    return this.getPokemons()
-    .then(pokemons => pokemons.find(pokemon => pokemon.id === id));
+  getPokemon(name: string) : Promise<Pokemon> {
+    return this.http.get(`${baseUrl}pokemon/${name}`)
+      .toPromise()
+      .then(response => response.json() as Pokemon);
   }
 }

@@ -5,19 +5,19 @@ import {PokemonService} from './pokemon.service';
 @Component({
   selector: 'my-pokemon-list',
   template: `
-  Search <input [(ngModel)]="search">
+  Search <input [(ngModel)]="search" (keyup)="onSearch()">
   <ul>
     <li *ngFor="let pokemon of pokemons">
-      <a [routerLink]="['/pokemon', pokemon.id]">{{pokemon.name}}</a>
+      <a [routerLink]="['/pokemon', pokemon.name]">{{pokemon.name}}</a>
     </li>
   </ul>
   `,
 })
-export class PokemonListComponent implements OnInit {
+export class PokemonListComponent {
   constructor(private pokemonService: PokemonService) { }
-  ngOnInit(): void {
-    this.pokemonService.getPokemons()
-    .then((pokemons) => this.pokemons = pokemons)
+  onSearch(): void {
+    this.pokemonService.getPokemons(this.search)
+      .then((pokemons) => this.pokemons = pokemons)
   }
   search: '';
   pokemons: Pokemon[];

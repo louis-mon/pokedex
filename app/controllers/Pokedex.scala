@@ -1,14 +1,19 @@
 package controllers
 
+import javax.inject.Inject
+
 import play.api.libs.json._
 import play.api.mvc._
 
-class Pokedex extends Controller{
-  def list(name: String) = Action {
-    Ok(Json.arr(
-      Json.obj("name" -> "a", "id" -> 1),
-      Json.obj("name" -> "b", "id" -> 2)
-    ))
-      .withHeaders("Access-Control-Allow-Origin" -> "*")
+import scala.concurrent.ExecutionContext
+
+class Pokedex @Inject() (rawData: PokemonRawDataService)(implicit context: ExecutionContext) extends Controller{
+  def list(name: String) = Action.async {
+    rawData.list
+      .map(_.filter(_.name.contains(name)))
+      .map(result => {
+        Ok(Json.arr(result.map(pokemon => Json.obj("name" -> pokemon.name): Json.JsValueWrapper): _*))
+          .withHeaders("Access-Control-Allow-Origin" -> "*")
+      })
   }
 }
