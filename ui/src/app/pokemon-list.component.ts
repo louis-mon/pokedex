@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import {Pokemon} from './pokemon';
 import {PokemonService} from './pokemon.service';
 
@@ -7,7 +7,7 @@ import {PokemonService} from './pokemon.service';
   template: `
   Search <input [(ngModel)]="search">
   <ul>
-    <li *ngFor="let pokemon of pokemons" (click)="selected=pokemon">
+    <li *ngFor="let pokemon of pokemons">
       <a [routerLink]="['/pokemon', pokemon.id]">{{pokemon.name}}</a>
     </li>
   </ul>
@@ -19,7 +19,6 @@ export class PokemonListComponent implements OnInit {
     this.pokemonService.getPokemons()
     .then((pokemons) => this.pokemons = pokemons)
   }
-  selected: Pokemon;
   search: '';
   pokemons: Pokemon[];
 }

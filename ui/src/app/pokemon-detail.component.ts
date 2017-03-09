@@ -23,6 +23,5 @@ export class PokemonDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private location: Location,
     private pokemonService: PokemonService) {}
-  @Input()
   pokemon: Pokemon
 }

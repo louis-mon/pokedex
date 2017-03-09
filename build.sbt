@@ -8,8 +8,7 @@ pipelineStages := Seq(digest)
 libraryDependencies ++= Seq(
   jdbc,
   cache,
-  ws,
-  "org.webjars.bower" % "ag-grid" % "8.1.0"
+  ws
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"

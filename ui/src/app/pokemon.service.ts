@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import {Http, Headers} from '@angular/http';
 
 import {Pokemon} from './pokemon';
-import {POKEMONS} from './mock-pokemons';
 
 import 'rxjs/add/operator/toPromise';
 
