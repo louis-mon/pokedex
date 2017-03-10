@@ -16,7 +16,7 @@ import { Pokemon } from './pokemon';
 export class PokemonDetailComponent implements OnInit {
   ngOnInit(): void {
     this.route.params
-    .switchMap((params: Params) => this.pokemonService.getPokemon(+params['id']))
+    .switchMap((params: Params) => this.pokemonService.getPokemon(params['id']))
     .subscribe((pokemon) => this.pokemon = pokemon);
   }
   constructor(

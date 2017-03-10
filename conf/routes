@@ -1,3 +1,5 @@
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
 
-GET     /list       controllers.Pokedex.list(name)
+GET     /list                       controllers.Pokedex.list(name)
+
+GET     /fetch                      controllers.Pokedex.fetch()
