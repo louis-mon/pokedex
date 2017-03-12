@@ -1,5 +1,4 @@
 import { Component, OnInit} from '@angular/core';
-import {Pokemon} from './pokemon';
 import {PokemonService} from './pokemon.service';
 
 @Component({
@@ -8,7 +7,7 @@ import {PokemonService} from './pokemon.service';
   Search <input [(ngModel)]="search" (keyup)="onSearch()">
   <ul>
     <li *ngFor="let pokemon of pokemons">
-      <a [routerLink]="['/pokemon', pokemon.name]">{{pokemon.name}}</a>
+      <a [routerLink]="['/pokemon', pokemon]">{{pokemon}}</a>
     </li>
   </ul>
   `,
@@ -20,5 +19,5 @@ export class PokemonListComponent {
       .then((pokemons) => this.pokemons = pokemons)
   }
   search: '';
-  pokemons: Pokemon[];
+  pokemons: String[];
 }

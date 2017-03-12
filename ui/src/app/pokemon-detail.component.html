@@ -1,0 +1,10 @@
+<button (click)="location.back()">Back to list</button>
+<div *ngIf="pokemon">
+  <h2>{{pokemon.name}}</h2>
+  <div>
+    Types:
+    <ul>
+      <li *ngFor="let type of pokemon.types">{{type}}</li>
+    </ul>
+  </div>
+</div>

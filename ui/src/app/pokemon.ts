@@ -1,4 +1,5 @@
 export class Pokemon {
   name: String;
-  id: number;
+  types: String[];
+  stats;
 }

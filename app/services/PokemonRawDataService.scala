@@ -30,7 +30,7 @@ class PokemonRawDataService @Inject()(ws: WSClient, cacheApi: CacheApi)(implicit
       .get()
       .map(response => response.json)
       .flatMap(json => (json \ "next").get match {
-        case JsNull => Future()
+        case JsNull => Future(())
         case JsString(next) => (json \ "results").get match {
           case JsArray(pokemonLinks) =>
             Logger.info(s"Written $writen / ${(json \ "count").as[Int]} so far")
@@ -52,11 +52,26 @@ class PokemonRawDataService @Inject()(ws: WSClient, cacheApi: CacheApi)(implicit
       })
   }
 
-  def get: Vector[Pokemon] = cacheApi.getOrElse("pokemons") {
+  def getList: Vector[Pokemon] = cacheApi.getOrElse("pokemons") {
     Source.fromFile(rawDataPath)
       .getLines()
       .map(Json.parse)
-        .map(json => Pokemon((json \ "name").as[String]))
+      .map(json => Pokemon(
+        name = (json \ "name").as[String],
+        stats = {
+          val stats = json \ "stats"
+          val s = (stats \\ "name").map(_.as[String])
+          val r = (stats \\ "base_stat").map(_.as[Int])
+          s.zip(r).toMap
+        },
+        types = (json \ "types" \\ "name").map(_.as[String])
+      ))
       .toVector
   }
+
+  def getPokemon(name: String): Option[Pokemon] =
+    cacheApi.getOrElse("pokemonsByName") {
+      getList.map(pokemon => pokemon.name -> pokemon).toMap
+    }
+      .get(name)
 }

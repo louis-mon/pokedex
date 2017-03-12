@@ -10,10 +10,10 @@ const baseUrl = 'http://localhost:9000/';
 @Injectable()
 export class PokemonService {
   constructor(private http: Http) {}
-  getPokemons(name: string): Promise<Pokemon[]> {
+  getPokemons(name: string): Promise<String[]> {
     return this.http.get(`${baseUrl}list?name=${name}`)
     .toPromise()
-    .then(response => response.json() as Pokemon[])
+    .then(response => response.json() as String[])
   }
   getPokemon(name: string) : Promise<Pokemon> {
     return this.http.get(`${baseUrl}pokemon/${name}`)
