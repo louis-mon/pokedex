@@ -16,40 +16,28 @@ import scala.io.Source
 class PokemonRawDataService @Inject()(ws: WSClient, cacheApi: CacheApi)(implicit context: ExecutionContext) {
   val baseApi = "http://pokeapi.co/api/v2/"
 
-  private def fetchPokemon(json: JsValue): Future[JsValue] =
-    ws.url((json \ "url").as[String])
-      .withRequestTimeout(Duration.Inf)
-      .get()
-      .map(response => response.json)
-
-  type PokemonList = Vector[JsValue]
-
-  private def fetchPokemons(writer: PrintWriter, writen: Int, url: String): Future[Unit] =
-    ws.url(url)
-      .withRequestTimeout(Duration.Inf)
-      .get()
-      .map(response => response.json)
-      .flatMap(json => (json \ "next").get match {
-        case JsNull => Future(())
-        case JsString(next) => (json \ "results").get match {
-          case JsArray(pokemonLinks) =>
-            Logger.info(s"Written $writen / ${(json \ "count").as[Int]} so far")
-            Future.sequence(pokemonLinks.map(fetchPokemon)).flatMap(rawData => {
-              rawData.foreach(rawPokemon => writer.println(Json.stringify(rawPokemon)))
-              Thread.sleep(3000)
-              fetchPokemons(writer, writen + rawData.size, next)
-            })
-        }
-      })
-
   val rawDataPath = "pokemon.rawData"
 
   def storeRawData(): Future[Unit] = {
     val writer = new PrintWriter(rawDataPath)
-    fetchPokemons(writer, 0, s"${baseApi}pokemon")
-      .map(_ => {
-        writer.close()
-      })
+    ws.url(s"${baseApi}pokemon?limit=10000")
+      .get()
+      .map(_.json)
+      .flatMap(json => (json \\ "url")
+        .map(_.as[String])
+        .foldLeft(Future(())) { (acc, url) =>
+          acc.flatMap { _ =>
+            ws.url(url)
+              .withRequestTimeout(Duration.Inf)
+              .get()
+              .map { response =>
+                Logger.info(s"Fetched $url")
+                writer.println(response.body)
+                Thread.sleep(300)
+              }
+          }
+        })
+      .map(_ => writer.close())
   }
 
   def getList: Vector[Pokemon] = cacheApi.getOrElse("pokemons") {
@@ -60,9 +48,9 @@ class PokemonRawDataService @Inject()(ws: WSClient, cacheApi: CacheApi)(implicit
         name = (json \ "name").as[String],
         stats = {
           val stats = json \ "stats"
-          val s = (stats \\ "name").map(_.as[String])
-          val r = (stats \\ "base_stat").map(_.as[Int])
-          s.zip(r).toMap
+          (stats \\ "name").map(_.as[String])
+            .zip((stats \\ "base_stat").map(_.as[Int]))
+            .toMap
         },
         types = (json \ "types" \\ "name").map(_.as[String])
       ))
