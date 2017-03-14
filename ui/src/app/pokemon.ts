@@ -1,5 +1,5 @@
 export class Pokemon {
   name: String;
   types: String[];
-  stats;
+  stats: any;
 }

@@ -12,11 +12,17 @@ import {PokemonService} from './pokemon.service';
   </ul>
   `,
 })
-export class PokemonListComponent {
+export class PokemonListComponent extends OnInit {
   constructor(private pokemonService: PokemonService) { }
+  ngOnInit(): void {
+    this.searchFor('');
+  }
   onSearch(): void {
-    this.pokemonService.getPokemons(this.search)
-      .then((pokemons) => this.pokemons = pokemons)
+    this.searchFor(this.search);
+  }
+  searchFor(name: string): void {
+    this.pokemonService.getPokemons(name)
+      .then((pokemons) => this.pokemons = pokemons);
   }
   search: '';
   pokemons: String[];
