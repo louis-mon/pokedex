@@ -2,12 +2,11 @@ package controllers
 
 import javax.inject.Inject
 
-import model.Pokemon
 import play.api.libs.json._
 import play.api.mvc._
 import services.PokemonRawDataService
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class Pokedex @Inject()(rawData: PokemonRawDataService)(implicit context: ExecutionContext) extends Controller {
   def list(name: String) = Action {
@@ -29,6 +28,14 @@ class Pokedex @Inject()(rawData: PokemonRawDataService)(implicit context: Execut
       ))
     }
       .withHeaders("Access-Control-Allow-Origin" -> "*")
+  }
+
+  def image(name: String) = Action.async {
+    rawData.getPokemon(name)
+      .flatMap(rawData.getImage)
+      .fold[Future[Result]](Future(NotFound)) { image =>
+      image.map(Ok(_))
+    }
   }
 
   def fetch = Action.async {

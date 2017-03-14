@@ -20,4 +20,8 @@ export class PokemonService {
       .toPromise()
       .then(response => response.json() as Pokemon);
   }
+
+  imageLink(pokemon: Pokemon): string {
+    return `${baseUrl}image/${pokemon.name}`;
+  }
 }

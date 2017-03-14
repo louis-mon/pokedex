@@ -23,5 +23,9 @@ export class PokemonDetailComponent implements OnInit {
               private pokemonService: PokemonService) {
   }
 
+  get imageLink(): string {
+    return this.pokemonService.imageLink(this.pokemon)
+  }
+
   pokemon: Pokemon
 }

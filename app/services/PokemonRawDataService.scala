@@ -3,6 +3,7 @@ package services
 import java.io._
 import javax.inject.Inject
 
+import akka.util.ByteString
 import model.Pokemon
 import play.api.Logger
 import play.api.cache.CacheApi
@@ -52,10 +53,23 @@ class PokemonRawDataService @Inject()(ws: WSClient, cacheApi: CacheApi)(implicit
             .zip((stats \\ "base_stat").map(_.as[Int]))
             .toMap
         },
-        types = (json \ "types" \\ "name").map(_.as[String])
+        types = (json \ "types" \\ "name").map(_.as[String]),
+        imageLink = (json \ "sprites" \ "front_default").asOpt[String]
       ))
       .toVector
   }
+
+  def getImage(pokemon: Pokemon): Option[Future[ByteString]] =
+    pokemon.imageLink.map(imageLink =>
+      cacheApi.get(s"pokemonImage.${pokemon.name}")
+        .map(Future(_))
+        .getOrElse(
+          ws.url(imageLink)
+            .get()
+            .map { response =>
+              cacheApi.set(s"pokemonImage.${pokemon.name}", response.bodyAsBytes)
+              response.bodyAsBytes
+            }))
 
   def getPokemon(name: String): Option[Pokemon] =
     cacheApi.getOrElse("pokemonsByName") {
