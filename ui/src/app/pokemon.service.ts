@@ -21,7 +21,13 @@ export class PokemonService {
       .then(response => response.json() as Pokemon);
   }
 
-  imageLink(pokemon: Pokemon): string {
+  static imageLink(pokemon: Pokemon): string {
     return `${baseUrl}image/${pokemon.name}`;
+  }
+
+  statsOfTypes(type: string): Promise<{[key: string]: number}> {
+    return this.http.get(`${baseUrl}type/${type}`)
+      .toPromise()
+      .then(response => response.json());
   }
 }

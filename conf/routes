@@ -7,3 +7,5 @@ GET     /pokemon/:name              controllers.Pokedex.pokemon(name)
 GET     /image/:name                controllers.Pokedex.image(name)
 
 GET     /fetch                      controllers.Pokedex.fetch()
+
+GET     /type/:name                 controllers.TypeStats.typeStats(name)

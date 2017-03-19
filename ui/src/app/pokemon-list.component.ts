@@ -13,7 +13,9 @@ import {PokemonService} from './pokemon.service';
   `,
 })
 export class PokemonListComponent extends OnInit {
-  constructor(private pokemonService: PokemonService) { }
+  constructor(private pokemonService: PokemonService) {
+    super()
+  }
   ngOnInit(): void {
     this.searchFor('');
   }

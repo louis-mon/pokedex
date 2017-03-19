@@ -61,8 +61,8 @@ class PokemonRawDataService @Inject()(ws: WSClient, cacheApi: CacheApi)(implicit
 
   def getImage(pokemon: Pokemon): Option[Future[ByteString]] =
     pokemon.imageLink.map(imageLink =>
-      cacheApi.get(s"pokemonImage.${pokemon.name}")
-        .map(Future(_))
+      cacheApi.get[ByteString](s"pokemonImage.${pokemon.name}")
+        .map(Future[ByteString](_))
         .getOrElse(
           ws.url(imageLink)
             .get()

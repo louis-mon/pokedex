@@ -18,5 +18,6 @@ class TypeStats @Inject()(cacheApi: CacheApi, rawData: PokemonRawDataService) ex
         .mapValues(stats => stats.sum.toDouble / stats.size)
     }
     Ok(Json.toJson(statsAverage))
+      .withHeaders("Access-Control-Allow-Origin" -> "*")
   }
 }

@@ -36,6 +36,7 @@ class Pokedex @Inject()(rawData: PokemonRawDataService)(implicit context: Execut
       .fold[Future[Result]](Future(NotFound)) { image =>
       image.map(Ok(_))
     }
+      .map(_.withHeaders("Access-Control-Allow-Origin" -> "*"))
   }
 
   def fetch = Action.async {
