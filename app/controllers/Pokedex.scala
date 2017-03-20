@@ -23,6 +23,7 @@ class Pokedex @Inject()(rawData: PokemonRawDataService)(implicit context: Execut
       .fold[Result](NotFound) { pokemon =>
       Ok(Json.obj(
         "name" -> pokemon.name,
+        "id" -> pokemon.id,
         "types" -> pokemon.types,
         "stats" -> pokemon.stats
       ))

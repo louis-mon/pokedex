@@ -47,6 +47,7 @@ class PokemonRawDataService @Inject()(ws: WSClient, cacheApi: CacheApi)(implicit
       .map(Json.parse)
       .map(json => Pokemon(
         name = (json \ "name").as[String],
+        id = (json \ "id").as[Int],
         stats = {
           val stats = json \ "stats"
           (stats \\ "name").map(_.as[String])

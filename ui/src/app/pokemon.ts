@@ -1,5 +1,6 @@
 export class Pokemon {
-  name: String;
-  types: String[];
+  name: string;
+  id: number;
+  types: string[];
   stats: {[key: string]: number};
 }

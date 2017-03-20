@@ -1,15 +1,18 @@
 <button (click)="location.back()">Back to list</button>
 <div *ngIf="pokemon">
-  <h2>{{pokemon.name}}</h2>
+  <h2>#{{pokemon.id}} {{pokemon.name}}</h2>
   <img src={{imageLink}}/>
   <div>
-    Types (click to compare average stats of that type):
+    Types (click to show average stats of that type in blue):
+    <br/>
+    <br/>
     <div *ngFor="let type of pokemon.types">
       <label>
         <input type="radio" name="type" (click)="onTypeCick(type)">
         {{type}}
       </label>
     </div>
+    <br/>
   </div>
   <svg width="360" height="300">
     <g transform="translate(180,150)">
