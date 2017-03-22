@@ -80,7 +80,7 @@ export class PokemonDetailComponent implements OnInit {
       });
   }
 
-  onTypeCick(type: string) {
+  onTypeClick(type: string) {
     console.log(type);
     this.selectedType = type;
   }
