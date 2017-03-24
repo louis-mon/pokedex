@@ -2,9 +2,9 @@
 
 ## Prerequisites
 
-sbt version >= 0.13.11
-npm version >= 3.10.10
-node version >= v6.10.0
+* sbt version >= 0.13.11
+* npm version >= 3.10.10
+* node version >= v6.10.0
 
 ## Run the server
 
