@@ -15,49 +15,40 @@ import scala.concurrent.duration.Duration
 import scala.io.Source
 
 class PokemonRawDataService @Inject()(ws: WSClient, cacheApi: CacheApi)(implicit context: ExecutionContext) {
-  val baseApi = "http://pokeapi.co/api/v2/"
+  private val baseApi = "http://pokeapi.co/api/v2/"
 
-  val rawDataPath = "pokemon.rawData"
+  private val rawDataPath = "pokemon.rawData"
 
   def storeRawData(): Future[Unit] = {
     val writer = new PrintWriter(rawDataPath)
+
+    def fetchPokemon(url: String) =
+      ws.url(url)
+        .withRequestTimeout(Duration.Inf)
+        .get()
+        .map { response =>
+          Logger.info(s"Fetched $url")
+          writer.println(response.body)
+          Thread.sleep(300)
+        }
+
     ws.url(s"${baseApi}pokemon?limit=10000")
       .get()
       .map(_.json)
       .flatMap(json => (json \\ "url")
         .map(_.as[String])
         .foldLeft(Future(())) { (acc, url) =>
-          acc.flatMap { _ =>
-            ws.url(url)
-              .withRequestTimeout(Duration.Inf)
-              .get()
-              .map { response =>
-                Logger.info(s"Fetched $url")
-                writer.println(response.body)
-                Thread.sleep(300)
-              }
-          }
+          acc.flatMap(_ => fetchPokemon(url))
         })
       .map(_ => writer.close())
   }
 
   def getList: Vector[Pokemon] = cacheApi.getOrElse("pokemons") {
-    Source.fromFile(rawDataPath)
-      .getLines()
-      .map(Json.parse)
-      .map(json => Pokemon(
-        name = (json \ "name").as[String],
-        id = (json \ "id").as[Int],
-        stats = {
-          val stats = json \ "stats"
-          (stats \\ "name").map(_.as[String])
-            .zip((stats \\ "base_stat").map(_.as[Int]))
-            .toMap
-        },
-        types = (json \ "types" \\ "name").map(_.as[String]),
-        imageLink = (json \ "sprites" \ "front_default").asOpt[String]
-      ))
-      .toVector
+    resource.managed(Source.fromFile(rawDataPath))
+      .acquireAndGet(_.getLines()
+        .map(Json.parse)
+        .map(Pokemon.fromJson)
+        .toVector)
   }
 
   def getImage(pokemon: Pokemon): Option[Future[ByteString]] =

@@ -8,7 +8,8 @@ pipelineStages := Seq(digest)
 libraryDependencies ++= Seq(
   jdbc,
   cache,
-  ws
+  ws,
+  "com.jsuereth" %% "scala-arm" % "2.0"
 )
 
 resolvers += "scalaz-bintray" at "http://dl.bintray.com/scalaz/releases"
