@@ -1,6 +1,6 @@
 import {Component, OnInit, Input} from '@angular/core';
-import {ActivatedRoute, Params}   from '@angular/router';
-import {Location}                 from '@angular/common';
+import {ActivatedRoute, Params, Router}   from '@angular/router';
+
 import 'rxjs/add/operator/switchMap';
 
 import {PokemonService} from './pokemon.service';
@@ -45,7 +45,7 @@ export class PokemonDetailComponent implements OnInit {
   }
 
   constructor(private route: ActivatedRoute,
-              private location: Location,
+              private router: Router,
               private pokemonService: PokemonService) {
   }
 
