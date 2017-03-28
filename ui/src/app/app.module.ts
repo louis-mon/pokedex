@@ -7,6 +7,7 @@ import {HttpModule} from '@angular/http';
 import { AppComponent }  from './app.component';
 import { PokemonListComponent } from './pokemon-list.component';
 import { PokemonDetailComponent } from './pokemon-detail.component';
+import {StatsChartComponent} from './stats-chart.component';
 
 @NgModule({
   imports:      [
@@ -27,7 +28,7 @@ import { PokemonDetailComponent } from './pokemon-detail.component';
     }]),
     HttpModule,
    ],
-  declarations: [ AppComponent, PokemonDetailComponent, PokemonListComponent ],
+  declarations: [ AppComponent, PokemonDetailComponent, PokemonListComponent, StatsChartComponent ],
   bootstrap:    [ AppComponent ]
 })
 export class AppModule { }

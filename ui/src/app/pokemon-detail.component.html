@@ -14,24 +14,8 @@
     </div>
     <br/>
   </div>
-  <svg width="360" height="300">
-    <g transform="translate(180,150)">
-      <polygon attr.points="{{polygonBorder(1)}}" stroke="black" fill="none"></polygon>
-      <polygon *ngFor="let step of [0.2, 0.4, 0.6, 0.8]"
-               attr.points="{{polygonBorder(step)}}"
-               stroke="black" stroke-opacity="0.5" fill="none" stroke-dasharray="3,3"></polygon>
-      <g *ngFor="let stat of allStats()">
-        <line x1="0" y1="0" attr.x2="{{stat.x}}" attr.y2="{{stat.y}}"
-              stroke="black" stroke-opacity="0.5" fill="none" stroke-dasharray="3,3"></line>
-        <text attr.transform="{{stat.transform}}"
-              text-anchor="middle">
-          {{stat.name}}
-        </text>
-      </g>
-      <polygon *ngIf="statsOfType[selectedType]"
-               attr.points="{{points(statsOfType[selectedType])}}"
-               style="stroke: blue; fill-opacity: 0"></polygon>
-      <polygon attr.points="{{points(pokemon.stats)}}" style="stroke: red; fill-opacity: 0"></polygon>
-    </g>
-  </svg>
+  <my-stats-chart
+    [pokemonStats]="pokemon.stats"
+    [averageStats]="statsOfType[selectedType]"
+  ></my-stats-chart>
 </div>
